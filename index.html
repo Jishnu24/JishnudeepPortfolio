@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jishnudeep Samanta — SAP Integration Developer</title>
+<meta name="description" content="SAP CPI Developer building event-driven integrations on SAP BTP. Cooking code & curries, photographer, always experimenting." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --font-display:'Instrument Serif', serif;
+    --font-body:'Inter', sans-serif;
+    --background:201 100% 13%;
+    --foreground:0 0% 100%;
+    --muted-foreground:240 4% 66%;
+    --primary:0 0% 100%;
+    --primary-foreground:0 0% 4%;
+    --secondary:0 0% 10%;
+    --muted:0 0% 10%;
+    --accent:0 0% 10%;
+    --border:0 0% 18%;
+    --input:0 0% 18%;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-body);
+    background:hsl(var(--background));
+    color:hsl(var(--foreground));
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{text-decoration:none;color:inherit}
+  ::selection{background:rgba(255,255,255,.85);color:hsl(var(--primary-foreground))}
+
+  .text-foreground{color:hsl(var(--foreground))}
+  .text-muted-foreground{color:hsl(var(--muted-foreground))}
+
+  /* ---------- liquid glass ---------- */
+  .liquid-glass{
+    background:rgba(255,255,255,0.01);
+    background-blend-mode:luminosity;
+    backdrop-filter:blur(4px);
+    -webkit-backdrop-filter:blur(4px);
+    border:none;
+    box-shadow:inset 0 1px 1px rgba(255,255,255,0.1);
+    position:relative;
+    overflow:hidden;
+    transition:transform .25s ease;
+    cursor:pointer;
+  }
+  .liquid-glass:hover{transform:scale(1.03)}
+  .liquid-glass::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;padding:1.4px;
+    background:linear-gradient(180deg,
+      rgba(255,255,255,0.45) 0%, rgba(255,255,255,0.15) 20%,
+      rgba(255,255,255,0) 40%, rgba(255,255,255,0) 60%,
+      rgba(255,255,255,0.15) 80%, rgba(255,255,255,0.45) 100%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;
+  }
+
+  /* ---------- animations ---------- */
+  @keyframes fade-rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+  .animate-fade-rise{animation:fade-rise .8s ease-out both}
+  .animate-fade-rise-delay{animation:fade-rise .8s ease-out .2s both}
+  .animate-fade-rise-delay-2{animation:fade-rise .8s ease-out .4s both}
+  .animate-fade-rise-delay-3{animation:fade-rise .8s ease-out .6s both}
+
+  /* ---------- video ---------- */
+  .video-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+  .scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,
+    hsla(var(--background),.45) 0%, hsla(var(--background),.25) 35%, hsla(var(--background),.65) 100%)}
+
+  /* ---------- layout primitives ---------- */
+  .shell{position:relative;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+  /* ---------- nav ---------- */
+  nav{position:relative;z-index:10}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 2rem;max-width:80rem;margin:0 auto}
+  .logo{font-family:var(--font-display);font-size:1.875rem;letter-spacing:-.02em;line-height:1}
+  .logo sup{font-size:.75rem;top:-.9em}
+  .nav-links{display:none;gap:2.25rem;align-items:center}
+  .nav-links a{font-size:.875rem;color:hsl(var(--muted-foreground));transition:color .2s}
+  .nav-links a:hover,.nav-links a.active{color:hsl(var(--foreground))}
+  .nav-cta{border-radius:9999px;padding:.625rem 1.5rem;font-size:.875rem;color:hsl(var(--foreground))}
+  @media(min-width:768px){.nav-links{display:flex}}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;z-index:10;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5rem 1.5rem 7rem}
+  .hero h1{
+    font-family:var(--font-display);font-weight:400;
+    font-size:3rem;line-height:.95;letter-spacing:-2.46px;max-width:80rem;
+  }
+  .hero h1 em{font-style:normal;color:hsl(var(--muted-foreground))}
+  .hero .sub{color:hsl(var(--muted-foreground));font-size:1rem;max-width:42rem;margin-top:2rem;line-height:1.65}
+  .hero-cta{border-radius:9999px;padding:1.25rem 3.5rem;font-size:1rem;color:hsl(var(--foreground));margin-top:3rem;display:inline-block}
+  .scroll-hint{margin-top:3.5rem;font-size:.75rem;letter-spacing:.25em;text-transform:uppercase;color:hsl(var(--muted-foreground));opacity:.7}
+  @media(min-width:640px){.hero h1{font-size:4.5rem}.hero .sub{font-size:1.125rem}}
+  @media(min-width:768px){.hero h1{font-size:6rem}}
+
+  /* ---------- content sections ---------- */
+  main{position:relative;z-index:5;background:hsl(var(--background))}
+  section{max-width:72rem;margin:0 auto;padding:7rem 2rem;border-top:1px solid hsl(var(--border))}
+  .eyebrow{font-size:.75rem;letter-spacing:.22em;text-transform:uppercase;color:hsl(var(--muted-foreground));margin-bottom:1.5rem}
+  .sec-title{font-family:var(--font-display);font-weight:400;font-size:2.5rem;line-height:1.05;letter-spacing:-.02em;margin-bottom:2.5rem}
+  .sec-title em{font-style:normal;color:hsl(var(--muted-foreground))}
+
+  .lead{font-size:1.2rem;line-height:1.7;color:hsl(var(--muted-foreground));max-width:46rem}
+  .lead b{color:hsl(var(--foreground));font-weight:500}
+
+  /* metrics */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:hsl(var(--border));border:1px solid hsl(var(--border));border-radius:1rem;overflow:hidden;margin-top:3.5rem}
+  .metric{background:hsl(var(--background));padding:2rem 1.25rem;text-align:center}
+  .metric .v{font-family:var(--font-display);font-size:2.75rem;line-height:1;color:hsl(var(--foreground))}
+  .metric .l{font-size:.8rem;color:hsl(var(--muted-foreground));margin-top:.6rem;letter-spacing:.04em}
+  @media(max-width:680px){.metrics{grid-template-columns:repeat(2,1fr)}}
+
+  /* experience */
+  .xp{padding:2.25rem 0;border-bottom:1px solid hsl(var(--border))}
+  .xp:last-child{border-bottom:none}
+  .xp-top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;flex-wrap:wrap}
+  .xp-role{font-family:var(--font-display);font-size:1.75rem;line-height:1.1}
+  .xp-co{color:hsl(var(--muted-foreground));font-size:.95rem;margin-top:.15rem}
+  .xp-date{font-size:.85rem;color:hsl(var(--muted-foreground));white-space:nowrap}
+  .xp ul{list-style:none;margin-top:1.25rem;display:grid;gap:.65rem}
+  .xp li{padding-left:1.4rem;position:relative;color:hsl(var(--muted-foreground));font-size:.97rem;line-height:1.55}
+  .xp li::before{content:'';position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:hsl(var(--muted-foreground))}
+  .xp li b{color:hsl(var(--foreground));font-weight:500}
+
+  /* skills */
+  .skill-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;margin-top:1rem}
+  @media(max-width:680px){.skill-grid{grid-template-columns:1fr}}
+  .skill-card{border:1px solid hsl(var(--border));border-radius:1rem;padding:1.75rem}
+  .skill-card h3{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:hsl(var(--muted-foreground));margin-bottom:1.1rem}
+  .tags{display:flex;flex-wrap:wrap;gap:.55rem}
+  .tag{font-size:.85rem;padding:.4rem .85rem;border-radius:9999px;border:1px solid hsl(var(--border));color:hsl(var(--foreground))}
+
+  /* projects */
+  .proj{border:1px solid hsl(var(--border));border-radius:1rem;padding:1.9rem;margin-bottom:1.25rem}
+  .proj h3{font-family:var(--font-display);font-size:1.5rem;margin-bottom:.5rem;display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+  .proj .badge{font-family:var(--font-body);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--muted-foreground));border:1px solid hsl(var(--border));padding:.2rem .6rem;border-radius:9999px}
+  .proj p{color:hsl(var(--muted-foreground));font-size:.97rem;line-height:1.6;margin-bottom:1rem}
+  .proj .stack{display:flex;flex-wrap:wrap;gap:.6rem;font-size:.8rem;color:hsl(var(--muted-foreground))}
+  .proj .stack span:not(:last-child)::after{content:'·';margin-left:.6rem}
+
+  /* certs */
+  .cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+  @media(max-width:780px){.cert-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.cert-grid{grid-template-columns:1fr}}
+  .cert{border:1px solid hsl(var(--border));border-radius:.9rem;padding:1.4rem}
+  .cert .n{font-size:.95rem;color:hsl(var(--foreground));margin-bottom:.3rem;line-height:1.35}
+  .cert .i{font-size:.8rem;color:hsl(var(--muted-foreground))}
+
+  /* contact */
+  .contact{text-align:center}
+  .contact .sec-title{margin-bottom:1.25rem}
+  .contact p{color:hsl(var(--muted-foreground));max-width:34rem;margin:0 auto 2.5rem}
+  .contact-row{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .contact-row .liquid-glass{border-radius:9999px;padding:1rem 2rem;font-size:.95rem;color:hsl(var(--foreground))}
+
+  footer{border-top:1px solid hsl(var(--border));padding:1.75rem 2rem;max-width:72rem;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.75rem;font-size:.8rem;color:hsl(var(--muted-foreground))}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    .animate-fade-rise,.animate-fade-rise-delay,.animate-fade-rise-delay-2,.animate-fade-rise-delay-3{animation:none}
+    .video-bg{display:none}
+  }
+  :focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:6px}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <video class="video-bg" autoplay loop muted playsinline>
+    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4" />
+  </video>
+  <div class="scrim"></div>
+
+  <nav>
+    <div class="nav-in">
+      <div class="logo">Jishnudeep<sup>&reg;</sup></div>
+      <div class="nav-links">
+        <a href="#top" class="active">Home</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Reach Us</a>
+      </div>
+      <a href="#contact" class="liquid-glass nav-cta">Begin Journey</a>
+    </div>
+  </nav>
+
+  <header class="hero" id="top">
+    <h1 class="animate-fade-rise">Where systems learn to <em>speak the same language.</em></h1>
+    <p class="sub animate-fade-rise-delay">
+      I'm Jishnudeep — an SAP CPI developer building event-driven integrations on SAP BTP. I wire enterprise systems together so data moves cleanly, securely, and in real time. Off the clock: cooking code &amp; curries, and chasing light with a camera.
+    </p>
+    <a href="#work" class="liquid-glass hero-cta animate-fade-rise-delay-2">View the work</a>
+    <div class="scroll-hint animate-fade-rise-delay-3">Scroll to explore &darr;</div>
+  </header>
+</div>
+
+<main>
+
+  <section id="about" class="reveal">
+    <div class="eyebrow">01 &mdash; About</div>
+    <h2 class="sec-title">I build the pipes that <em>enterprises run on.</em></h2>
+    <p class="lead">
+      With <b>1+ year</b> at TCS on the SAP BTP Integration Suite, I design real-time, event-driven integrations &mdash; making sure a purchase order leaving SAP ECC lands cleanly in Oracle Unifier, transformed and validated, with no one touching it by hand. I care about the unglamorous parts: <b>exception handling, alerting, and clean deployments</b>. A flow that fails silently isn't finished. My CSE (AI &amp; ML) background is why I reach for <b>Groovy and Python</b> the moment a problem needs logic instead of clicks.
+    </p>
+    <div class="metrics">
+      <div class="metric"><div class="v">10+</div><div class="l">iFlows shipped</div></div>
+      <div class="metric"><div class="v">5K+</div><div class="l">messages / day</div></div>
+      <div class="metric"><div class="v">&lt;5s</div><div class="l">sync latency</div></div>
+      <div class="metric"><div class="v">0</div><div class="l">prod rollbacks</div></div>
+    </div>
+  </section>
+
+  <section id="work" class="reveal">
+    <div class="eyebrow">02 &mdash; Experience</div>
+    <h2 class="sec-title">Where I've <em>shipped.</em></h2>
+
+    <div class="xp">
+      <div class="xp-top">
+        <div>
+          <div class="xp-role">SAP CPI Developer</div>
+          <div class="xp-co">Tata Consultancy Services &middot; Kolkata, IN</div>
+        </div>
+        <div class="xp-date">May 2025 &mdash; Present</div>
+      </div>
+      <ul>
+        <li>Designed and developed <b>10+ end-to-end integration flows</b> on SAP CPI across enterprise systems.</li>
+        <li>Built CPI iFlows for asynchronous messaging via SAP AEM, handling <b>5,000+ messages/day</b> reliably.</li>
+        <li>Implemented XML&rarr;JSON transformations, XSLT and message mappings, cutting format inconsistencies <b>~30%</b>.</li>
+        <li>Wrote Groovy scripts for dynamic routing and payload enrichment; integrated REST APIs with OAuth 2.0.</li>
+        <li>Built centralized exception handling that cut resolution time <b>40%</b>; deployed across all environments with <b>zero critical failures</b>.</li>
+      </ul>
+    </div>
+
+    <div class="xp">
+      <div class="xp-top">
+        <div>
+          <div class="xp-role">SAP CPI Integration Developer</div>
+          <div class="xp-co">Severn Trent Water &mdash; Project</div>
+        </div>
+        <div class="xp-date">Jun 2025 &mdash; Present</div>
+      </div>
+      <ul>
+        <li>Engineered an event-driven solution syncing Purchase Orders from SAP ECC to Oracle Unifier at <b>&lt;5s latency</b>.</li>
+        <li>Designed topic-based async architecture on SAP AEM, improving throughput <b>~50%</b>.</li>
+        <li>Built transformation logic reducing data rejection rates <b>30%</b>, plus value-mapping driven routing.</li>
+        <li>Delivered multi-environment deployments with <b>100% successful release cycles, no rollback</b>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="skills" class="reveal">
+    <div class="eyebrow">03 &mdash; Toolkit</div>
+    <h2 class="sec-title">What I <em>work with.</em></h2>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <h3>SAP &amp; Integration</h3>
+        <div class="tags"><span class="tag">SAP CPI</span><span class="tag">BTP Integration Suite</span><span class="tag">SAP ECC</span><span class="tag">SAP AEM</span><span class="tag">Message Mapping</span><span class="tag">Value Mapping</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Protocols &amp; Data</h3>
+        <div class="tags"><span class="tag">REST</span><span class="tag">SOAP</span><span class="tag">OAuth 2.0</span><span class="tag">XML</span><span class="tag">JSON</span><span class="tag">XSLT</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Languages</h3>
+        <div class="tags"><span class="tag">Groovy</span><span class="tag">Java</span><span class="tag">Python</span></div>
+      </div>
+      <div class="skill-card">
+        <h3>Tools &amp; Practice</h3>
+        <div class="tags"><span class="tag">Postman</span><span class="tag">API Testing</span><span class="tag">Integration Monitoring</span><span class="tag">Exception Handling</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="reveal">
+    <div class="eyebrow">04 &mdash; Side builds</div>
+    <h2 class="sec-title">Things I built <em>to learn.</em></h2>
+
+    <div class="proj">
+      <h3>SAP CPI Mini Integration <span class="badge">personal</span></h3>
+      <p>An end-to-end flow simulating SAP ECC &rarr; external system communication over REST, with XML&rarr;JSON transformation, message mapping, and logging built to mirror real enterprise scenarios.</p>
+      <div class="stack"><span>CPI</span><span>REST</span><span>Groovy</span><span>Postman</span></div>
+    </div>
+
+    <div class="proj">
+      <h3>API Integration &amp; Monitoring Dashboard <span class="badge">learning</span></h3>
+      <p>A lightweight monitoring solution tracking message-flow status from logs and API responses, with simulated error scenarios and retry logic to harden reliability.</p>
+      <div class="stack"><span>API Testing</span><span>Logging</span><span>Retry Logic</span><span>Debugging</span></div>
+    </div>
+  </section>
+
+  <section id="certs" class="reveal">
+    <div class="eyebrow">05 &mdash; Credentials</div>
+    <h2 class="sec-title">Education &amp; <em>certifications.</em></h2>
+    <div class="cert-grid">
+      <div class="cert"><div class="n">B.Tech &mdash; CSE (AI &amp; ML)</div><div class="i">Haldia Institute of Technology &middot; CGPA 9.08</div></div>
+      <div class="cert"><div class="n">Java Fullstack Developer</div><div class="i">Wipro &middot; 2023</div></div>
+      <div class="cert"><div class="n">Web Design for Everybody</div><div class="i">Coursera &middot; 2023</div></div>
+      <div class="cert"><div class="n">AWS Fundamentals</div><div class="i">Coursera &middot; 2022</div></div>
+      <div class="cert"><div class="n">Crash Course in Data Science</div><div class="i">Coursera &middot; 2022</div></div>
+      <div class="cert"><div class="n">Cloud Engineering + Data Science &amp; ML</div><div class="i">Google &middot; 2021</div></div>
+    </div>
+  </section>
+
+  <section id="contact" class="contact reveal">
+    <div class="eyebrow">06 &mdash; Reach Us</div>
+    <h2 class="sec-title">Let's build something <em>that talks.</em></h2>
+    <p>Open to SAP integration roles and interesting problems. The fastest way to reach me is email.</p>
+    <div class="contact-row">
+      <a href="mailto:jishnudeep24@gmail.com" class="liquid-glass">jishnudeep24@gmail.com</a>
+      <a href="tel:+917076347068" class="liquid-glass">+91 70763 47068</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Jishnudeep Samanta</span>
+    <span>cooking code &amp; curries &middot; built static</span>
+  </footer>
+</main>
+
+<script>
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+</script>
+</body>
+</html>
